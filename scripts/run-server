@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -eu
+
+echo '########## BEGIN CONTAINER INIT ##########'
+date
+
+NODE_ENV="${NODE_ENV:-development}"
+APP_SSM_PARAMETER_PATH="/apollo-engine"
+
+echo "Setting application environment from secure storage"
+. ./scripts/get-parameters-by-path $APP_SSM_PARAMETER_PATH/$NODE_ENV
+
+echo "Starting Node.js application"
+npm start

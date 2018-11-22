@@ -1,0 +1,34 @@
+[
+  {
+    "ParameterKey": "ServiceName",
+    "ParameterValue": "ecs-service-dev"
+  },
+  {
+    "ParameterKey": "ContainerCpu",
+    "ParameterValue": "256"
+  },
+  {
+    "ParameterKey": "Priority",
+    "ParameterValue": "1"
+  },
+  {
+    "ParameterKey": "ContainerPort",
+    "ParameterValue": "8000"
+  },
+  {
+    "ParameterKey": "ImageUrl",
+    "ParameterValue": "205375198116.dkr.ecr.us-east-1.amazonaws.com/ecs-service:v1"
+  },
+  {
+    "ParameterKey": "DesiredCount",
+    "ParameterValue": "1"
+  },
+  {
+    "ParameterKey": "StackName",
+    "ParameterValue": "ecs-service-dev-cluster"
+  },
+  {
+    "ParameterKey": "CommandOverride",
+    "ParameterValue": "./scripts/run-server"
+  }
+]

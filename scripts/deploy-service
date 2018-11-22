@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+NODE_ENV="${NODE_ENV:-dev}"
+
+APP_VERSION=$(node -p "require('./package.json').version")
+APP_NAME=$(node -p "require('./package.json').name")
+
+SERVICE_NAME=${APP_NAME}-${NODE_ENV}
+SERVICE_FILE=aws/service.cloudformation.yml
+SERVICE_PARAMETERS_FILE=aws/service-parameters.${NODE_ENV}.cloudformation.json
+OP=create-stack
+
+SERVICE_STACK_ARN=$(aws cloudformation $OP \
+    --stack-name $SERVICE_NAME \
+    --template-body file://$SERVICE_FILE \
+    --parameters file://$SERVICE_PARAMETERS_FILE \
+    --capabilities CAPABILITY_IAM \
+    --output text \
+    --query 'StackId') && echo $SERVICE_STACK_ARN
+
+aws cloudformation wait \
+   stack-create-complete \
+   --stack-name $SERVICE_NAME
+
+echo "Service created successfully!"
+exit 0

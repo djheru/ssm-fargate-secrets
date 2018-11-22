@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+NODE_ENV="${NODE_ENV:-dev}"
+
+APP_VERSION=$(node -p "require('./package.json').version")
+APP_NAME=$(node -p "require('./package.json').name")
+
+CLUSTER_NAME=${APP_NAME}-${NODE_ENV}-cluster
+CLUSTER_FILE=aws/cluster.cloudformation.yml
+
+{
+    echo "Checking to see if stack exists"
+
+    STACK_EXISTS=$(aws cloudformation describe-stacks \
+        --stack-name $CLUSTER_NAME \
+        --output text \
+        --query 'Stacks[0].StackStatus')
+    if [ "$STACK_EXISTS" = "CREATE_COMPLETE" ]; then
+        echo "Stack for ${CLUSTER_NAME} already exists, exiting"
+        exit 0
+    fi
+} || {
+    echo "Stack does not exist"
+}
+
+echo "Attempting to create cluster: ${CLUSTER_NAME}"
+
+CLUSTER_STACK_ARN=$(aws cloudformation create-stack \
+    --stack-name $CLUSTER_NAME \
+    --template-body file://$CLUSTER_FILE \
+    --capabilities CAPABILITY_IAM \
+    --output text \
+    --query 'StackId')
+
+echo "Creating new cluster stack: ${CLUSTER_STACK_ARN}"
+echo "Please be patient, this will take a while"
+
+aws cloudformation wait \
+   stack-create-complete \
+   --stack-name $CLUSTER_NAME
+
+echo "Cluster created successfully!"
+exit 0
