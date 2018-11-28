@@ -3,7 +3,7 @@ export CLUSTER_NAME=ecs-cluster
 export CLUSTER_FILE=aws/cluster.cloudformation.yml
 export SERVICE_NAME=ecs-service
 export SERVICE_FILE=aws/service.cloudformation.yml
-export SERVICE_PARAMETERS_FILE=aws/service-parameters.cloudformation.json
+export SERVICE_PARAMETERS_FILE=aws/service-parameters.dev.cloudformation.json
 
 # Create Network Stack 
 export CLUSTER_STACK_ARN=$(aws cloudformation create-stack \
