@@ -16,8 +16,9 @@ CLUSTER_FILE=aws/cluster.cloudformation.yml
     STACK_EXISTS=$(aws cloudformation describe-stacks \
         --stack-name $CLUSTER_NAME \
         --output text \
-        --query 'Stacks[0].StackStatus')
-    if [ "$STACK_EXISTS" = "CREATE_COMPLETE" ]; then
+        --query 'Stacks[0].StackStatus' 2>/dev/null) || echo "Stack does not exist"
+
+    if [ "$STACK_EXISTS" = "CREATE_COMPLETE" ] || [ "$STACK_EXISTS" = "UPDATE_COMPLETE" ]; then
         echo "Stack for ${CLUSTER_NAME} already exists, exiting"
         exit 0
     fi
